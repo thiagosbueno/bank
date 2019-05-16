@@ -1,4 +1,4 @@
-package com.example.projectretrofitbank.View;
+package com.example.projectretrofitbank;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -9,9 +9,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.projectretrofitbank.Controler.StatementController;
 import com.example.projectretrofitbank.Model.Statement;
 import com.example.projectretrofitbank.Model.User;
-import com.example.projectretrofitbank.R;
 import com.example.projectretrofitbank.Retrrofit.RetrofitConfig;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -48,7 +49,7 @@ public class StatementsActivity extends AppCompatActivity {
         String cpfOrEmail = getIntent().getStringExtra("cpfOrEmail");
         String password = getIntent().getStringExtra("password");
 
-        new RetrofitConfig()
+        new StatementController()
             .getStatmentsService()
             .buscarStatements(1)
             .enqueue(new Callback<Statement>() {

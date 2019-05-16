@@ -1,24 +1,22 @@
 package com.example.projectretrofitbank.Controler;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.util.Log;
-import android.widget.Toast;
-
 import com.example.projectretrofitbank.Interface.StatementsService;
 import com.example.projectretrofitbank.Interface.UserService;
+import com.example.projectretrofitbank.Model.User;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainController {
+public class UserController {
 
+    private User user;
     private String cpfOrEmail;
-    private String  password;
+    private String password;
     private final Retrofit retrofit;
 
-    public MainController(String cpfOrEmail, String password) {
-        this.cpfOrEmail = cpfOrEmail;
+    public UserController(String user, String password) {
+        this.user = new User();
+        this.cpfOrEmail = user;
         this.password = password;
         this.retrofit = new Retrofit.Builder()
                 .baseUrl("https://bank-app-test.herokuapp.com/api/")
@@ -105,13 +103,27 @@ public class MainController {
         }
         return achouNumero && achouMaiuscula && achouMinuscula && achouSimbolo;
     }
-
     public UserService getUserService() {
         return this.retrofit.create(UserService.class);
     }
 
-    public StatementsService getStatmentsService() {
-        return this.retrofit.create(StatementsService.class);
-    }
 
+    public boolean validate(String cpfOrEmail, String password)
+    {
+        if(validaCPF(cpfOrEmail) || validateEmailFormat(cpfOrEmail))
+        {
+            if(validaSenha(password))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
 }

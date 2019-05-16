@@ -1,4 +1,4 @@
-package com.example.projectretrofitbank.View;
+package com.example.projectretrofitbank;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,14 +10,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import com.example.projectretrofitbank.Controler.MainController;
+import com.example.projectretrofitbank.Controler.UserController;
 import com.example.projectretrofitbank.Model.User;
-import com.example.projectretrofitbank.R;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
+
+    User objUser;
+    UserController userController;
 
     EditText getEtMainEmail;
     EditText getEtPassword;
@@ -28,7 +31,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        objUser = new User();
         final String username = getFromSharedPreferences("username");
+
 
         getEtMainEmail = (EditText) findViewById(R.id.etMainEmail);
         getEtPassword = (EditText) findViewById(R.id.etMainPassword);
@@ -55,13 +61,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void validate(final String cpfOrEmail, String password) {
 
-        MainController mainController = new MainController(cpfOrEmail, password);
+        userController = new UserController(cpfOrEmail, password);
 
-        if(mainController.validaCPF(cpfOrEmail) || mainController.validateEmailFormat(cpfOrEmail))
+        if(userController.validaCPF(cpfOrEmail) || userController.validateEmailFormat(cpfOrEmail))
         {
-            if(mainController.validaSenha(password))
+            if(userController.validaSenha(password))
             {
-                new MainController(cpfOrEmail, password)
+                new UserController(cpfOrEmail, password)
                         .getUserService()
                         .buscarUser(cpfOrEmail,password)
                         .enqueue(new Callback<User>() {
@@ -92,13 +98,14 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Cpf ou Email inválido", Toast.LENGTH_LONG).show();
         }
     }
-    private void saveLoginSharedPreferences(String username){
+
+    public void saveLoginSharedPreferences(String username){
         SharedPreferences sharedPreferences = getSharedPreferences("login_preferences" , Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("username", username);
         editor.apply();
     }
-    private String getFromSharedPreferences(String key) {
+    public String getFromSharedPreferences(String key) {
         SharedPreferences sharedPreferences = getSharedPreferences("login_preferences", Context.MODE_PRIVATE);
         return sharedPreferences.getString(key,"");
     }
